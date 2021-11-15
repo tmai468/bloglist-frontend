@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import LoginError from "./Error"
 import loginService from '../services/login'
+import PropTypes from "prop-types"
 const Login = (props) => {
     const [error, setError] = useState(false)
     const { username, setUsername, password, setPassword, setUser} = props
@@ -29,7 +30,7 @@ const Login = (props) => {
             <form onSubmit={handleLogin}>
                 <div>
                     username
-                    <input
+                    <input id="username"
                     type="text"
                     value={username}
                     name="Username"
@@ -40,7 +41,7 @@ const Login = (props) => {
                 </div>
                 <div>
                     password
-                    <input
+                    <input id="password"
                     type="password"
                     value={password}
                     name="Username"
@@ -49,10 +50,18 @@ const Login = (props) => {
                         setPassword(target.value)}}
                     />
                 </div>
-                <button type="submit">login</button>
+                <button id="loginButton" type="submit">login</button>
             </form>
         </div>
     )
+}
+
+Login.propTypes = {
+    username: PropTypes.string.isRequired,
+    password: PropTypes.string.isRequired,
+    setUsername: PropTypes.func.isRequired,
+    setPassword: PropTypes.func.isRequired,
+    setUser: PropTypes.func.isRequired
 }
 
 export default Login
