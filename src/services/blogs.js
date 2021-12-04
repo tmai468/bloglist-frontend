@@ -5,9 +5,12 @@ const setToken = (newToken) => {
   token = newToken
 }
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+const getAll = async () => {
+  const response = await axios.get(baseUrl)
+  const allBlogHidden = response.data.map(blog => {
+    return {...blog, showBlog: false}
+  })
+  return allBlogHidden
 }
 
 const createNewBlog = async (dataObj) => {
@@ -54,4 +57,22 @@ const deleteBlog = async (blogObject) => {
   await axios.delete(delUrl, config)
 }
 
-export default { getAll, setToken, createNewBlog, updateLikes, deleteBlog }
+// PUT request to add comment to list of comments
+const addComment = async (newComment, blogObject) => {
+  console.log('about to add comment')
+  const newBlogObj = {...blogObject,
+                      comments: blogObject.comments.concat(newComment)}
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+  const updatedNote = await axios.put(baseUrl.concat(`/${blogObject.id}`),
+    newBlogObj, config)
+  console.log('after request')
+  console.log(updatedNote.data)
+  return updatedNote.data
+}
+
+
+export default { getAll, setToken, createNewBlog, updateLikes, deleteBlog, addComment }

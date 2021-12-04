@@ -2,9 +2,12 @@ import React, { useState } from 'react'
 import Togglable from './Togglable'
 import AllBlogDetails from './AllBlogDetails'
 import blogService from '../services/blogs'
+import { useDispatch, useSelector } from 'react-redux'
+import { createAddBlogAction, createBlogShowAction, createBlogUpdateLikes } from '../reducers/blogPostReducer'
 
 const Blog = ({blog, loggedInUserName}) => {
-  const [currentBlog, setCurrentBlog] = useState(blog)
+  const dispatch = useDispatch()
+  // const [currentBlog, setCurrentBlog] = useState(blog)
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -12,18 +15,19 @@ const Blog = ({blog, loggedInUserName}) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  const [showBlogDetail, setShowBlogDetail] = useState(false)
-  const toggleShowBlogDetail = () => {
-    setShowBlogDetail(!showBlogDetail)
+  // const [showBlogDetail, setShowBlogDetail] = useState(false)
+  const toggleShowBlogDetail = (blogToShow) => {
+    dispatch(createBlogShowAction(blogToShow))
   }
   const updateLikeForABlog = async () => {
-    const newBlog = await blogService.updateLikes(currentBlog)
-    setCurrentBlog(newBlog)
+    const newBlog = await blogService.updateLikes(blog)
+    dispatch(createBlogUpdateLikes(newBlog.id))
 }
-  if (currentBlog !== null) {
+  if (blog !== null) {
   return (<div style={blogStyle} className="blogDiv">    
-    {currentBlog.title} {currentBlog.author}<button className="showHideBtn" onClick={toggleShowBlogDetail}>{showBlogDetail ? "hide" : "view"}</button>
-    {showBlogDetail ? <AllBlogDetails currentBlog={currentBlog} setCurrentBlog={setCurrentBlog} userName={loggedInUserName} updateLikeForABlog={updateLikeForABlog}/> : null}
+    {blog.title} {blog.author}
+    {/* <button className="showHideBtn" onClick={() => toggleShowBlogDetail(blog)}>{blog.showBlog ? "hide" : "view"}</button>
+    {blog.showBlog ? <AllBlogDetails currentBlog={blog} userName={loggedInUserName} updateLikeForABlog={updateLikeForABlog}/> : null} */}
   </div> )
   }
   return null

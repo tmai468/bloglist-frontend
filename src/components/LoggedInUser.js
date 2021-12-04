@@ -1,11 +1,13 @@
 import React from "react"
 import PropTypes from "prop-types"
+import { useDispatch } from "react-redux"
+import { createLogoutAction } from "../reducers/loggedInUserReducer"
 const LoggedInUser = (props) => {
-    const { name, setUser } = props
-    const handleLogout = () => {
+    const dispatch = useDispatch()
+    const { name } = props
+    const handleLogout = () => { 
         window.localStorage.removeItem('loggedInUserJSON')
-        setUser(null)
-        
+        dispatch(createLogoutAction())
     }
     return (
         <div>
@@ -19,7 +21,7 @@ const LoggedInUser = (props) => {
 
 LoggedInUser.propTypes = {
     name: PropTypes.string.isRequired,
-    setUser: PropTypes.func.isRequired
+    // setUser: PropTypes.func.isRequired
 }
 
 export default LoggedInUser

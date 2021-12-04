@@ -2,18 +2,24 @@ import React, { useState } from "react"
 import LoginError from "./Error"
 import loginService from '../services/login'
 import PropTypes from "prop-types"
+import { useDispatch } from "react-redux"
+import { createLoginAction } from "../reducers/loggedInUserReducer"
+import { Form, Button } from "react-bootstrap"
 const Login = (props) => {
+    const dispatch = useDispatch()
     const [error, setError] = useState(false)
-    const { username, setUsername, password, setPassword, setUser} = props
+    const { username, setUsername, password, setPassword } = props
     const handleLogin = async (event) => {
         event.preventDefault()
         try {
           // console.log(username)
           // console.log(password)
         const user = await loginService.attemptLogin({ username, password })
+        // window.localStorage.setItem('loggedInUserJSON', JSON.stringify(user))
+        console.log('got user')
         console.log(user)
         window.localStorage.setItem('loggedInUserJSON', JSON.stringify(user))
-         setUser(user)
+        dispatch(createLoginAction(user))
         setUsername('')
         setPassword('')
         } catch (exception) {
@@ -27,10 +33,10 @@ const Login = (props) => {
                 log in to application
             </h2>
             {error ? <LoginError /> : null}
-            <form onSubmit={handleLogin}>
-                <div>
-                    username
-                    <input id="username"
+            <Form onSubmit={handleLogin}>
+                <Form.Group>
+                    <Form.Label>username</Form.Label>
+                    <Form.Control id="username"
                     type="text"
                     value={username}
                     name="Username"
@@ -38,10 +44,9 @@ const Login = (props) => {
                         console.log(target.value)
                         setUsername(target.value)}}
                     />
-                </div>
-                <div>
-                    password
-                    <input id="password"
+                    
+                    <Form.Label>password</Form.Label>
+                    <Form.Control id="password"
                     type="password"
                     value={password}
                     name="Username"
@@ -49,9 +54,9 @@ const Login = (props) => {
                         console.log(target.value)
                         setPassword(target.value)}}
                     />
-                </div>
-                <button id="loginButton" type="submit">login</button>
-            </form>
+                <Button id="loginButton" type="submit" variant="primary">login</Button>
+                </Form.Group>
+            </Form>
         </div>
     )
 }
@@ -60,8 +65,8 @@ Login.propTypes = {
     username: PropTypes.string.isRequired,
     password: PropTypes.string.isRequired,
     setUsername: PropTypes.func.isRequired,
-    setPassword: PropTypes.func.isRequired,
-    setUser: PropTypes.func.isRequired
+    setPassword: PropTypes.func.isRequired
+    // setUser: PropTypes.func.isRequired
 }
 
 export default Login

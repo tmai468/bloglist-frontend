@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react"
 import blogService from '../services/blogs'
-const AllBlogDetails = ({currentBlog, setCurrentBlog, userName, updateLikeForABlog}) => {
+import { createBlogDelete } from "../reducers/blogPostReducer"
+import { useDispatch } from "react-redux"
+const AllBlogDetails = ({currentBlog, userName, updateLikeForABlog}) => {
+    const dispatch = useDispatch()
     const [blogAddedByUser, setBlogAddedByUser] = useState(false)
     useEffect(() => {
         try {
@@ -16,7 +19,8 @@ const AllBlogDetails = ({currentBlog, setCurrentBlog, userName, updateLikeForABl
     const deleteABlog = async () => {
         if (window.confirm(`Remove blog ${currentBlog.title} by ${currentBlog.author}`)) {
             await blogService.deleteBlog(currentBlog)
-            setCurrentBlog(null)
+            dispatch(createBlogDelete(currentBlog.id))
+            
         }
     }
     if (currentBlog !== null) {
@@ -28,6 +32,11 @@ const AllBlogDetails = ({currentBlog, setCurrentBlog, userName, updateLikeForABl
                 {blogAddedByUser ? <button className="blogDeleteBtn" onClick={deleteABlog}>remove</button> : null}
             </div>
         )
+        // return (
+        //     <div>
+        //         <h2>{currentBlog.title} {currentBlog.author}</h2>
+        //     </div>
+        // )
     }
 }
 
